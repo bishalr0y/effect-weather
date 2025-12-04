@@ -4,6 +4,7 @@
   "type": "module",
   "private": true,
   "devDependencies": {
+    "@effect/language-service": "^0.59.0",
     "@types/bun": "latest"
   },
   "peerDependencies": {
@@ -14,5 +15,10 @@
     "@effect/platform": "^0.93.6",
     "@effect/platform-node": "^0.103.0",
     "effect": "^3.19.8"
-  }
+  },
+  "plugins": [
+    {
+      "name": "@effect/language-service"
+    }
+  ]
 }
