@@ -20,5 +20,8 @@
     {
       "name": "@effect/language-service"
     }
-  ]
+  ],
+  "scripts": {
+    "start": "bun run src/index.ts"
+  }
 }
