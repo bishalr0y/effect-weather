@@ -6,12 +6,10 @@ export class Weather extends Schema.Class<Weather>("Weather")({
     lon: Schema.Number,
     lat: Schema.Number,
   }),
-  weather: Schema.Array(
+  weather: Schema.NonEmptyArrayEnsure(
     Schema.Struct({
-      id: Schema.Number,
       main: Schema.String,
       description: Schema.String,
-      icon: Schema.String,
     }),
   ),
   main: Schema.Struct({
@@ -21,18 +19,12 @@ export class Weather extends Schema.Class<Weather>("Weather")({
     temp_max: Schema.Number,
     humidity: Schema.Number,
     pressure: Schema.Number,
-    sea_level: Schema.Number,
-    grnd_level: Schema.Number,
   }),
   wind: Schema.Struct({
     speed: Schema.Number,
     deg: Schema.Number,
   }),
   sys: Schema.Struct({
-    type: Schema.optional(Schema.Number),
-    id: Schema.optional(Schema.Number),
     country: Schema.String,
-    sunrise: Schema.Number,
-    sunset: Schema.Number,
   }),
 }) {}

@@ -34,15 +34,20 @@ const getWeather = (location: string) =>
 const program = Effect.gen(function* () {
   const input = yield* Prompt.text({ message: "Enter your location: " });
   const weather = yield* getWeather(input);
+
+  const bold = (s: string) => `\x1b[1m${s}\x1b[0m`;
   yield* Console.log(`
-  Location: ${weather.name}
-  Temperature: ${weather.main.temp}
-  Max Temperature: ${weather.main.temp_max} 
-  Min Temperature: ${weather.main.temp_min}
-  Humidity: ${weather.main.humidity}
-  Pressure: ${weather.main.pressure}
-  Wind Speed: ${weather.wind.speed}
-  Wind Degree: ${weather.wind.deg}
+  ${bold("Location:")} ${weather.name}
+  ${bold("Country:")} ${weather.sys.country}
+  ${bold("Coordinates:")} ${weather.coord.lat},${weather.coord.lon}
+  ${bold("Weather:")} ${weather.weather[0].main} (${weather.weather[0].description})
+  ${bold("Temperature:")} ${weather.main.temp}
+  ${bold("Max Temperature:")} ${weather.main.temp_max}
+  ${bold("Min Temperature:")} ${weather.main.temp_min}
+  ${bold("Humidity:")} ${weather.main.humidity}
+  ${bold("Pressure:")} ${weather.main.pressure}
+  ${bold("Wind Speed:")} ${weather.wind.speed}
+  ${bold("Wind Degree:")} ${weather.wind.deg}
 `);
 }).pipe(Effect.catchAll((error) => Console.log(`Error: ${error}`)));
 
