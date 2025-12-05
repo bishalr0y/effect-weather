@@ -8,7 +8,7 @@ const getWeather = (location: string) =>
   Effect.gen(function* () {
     const apiKey = yield* Config.redacted("OPENWEATHER_API_KEY");
     const response = yield* HttpClient.get(
-      `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${Redacted.value(apiKey)}`,
+      `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${Redacted.value(apiKey)}&units=metric`,
     );
     if (response.status < 200 || response.status > 300) {
       yield* Effect.fail(`Request failed: ${response.status}`);
@@ -20,7 +20,16 @@ const getWeather = (location: string) =>
 const program = Effect.gen(function* () {
   const input = yield* Prompt.text({ message: "Enter your location: " });
   const weather = yield* getWeather(input);
-  yield* Console.log(weather);
+  yield* Console.log(`
+  Location: ${weather.name}
+  Temperature: ${weather.main.temp}
+  Max Temperature: ${weather.main.temp_max} 
+  Min Temperature: ${weather.main.temp_min}
+  Humidity: ${weather.main.humidity}
+  Pressure: ${weather.main.pressure}
+  Wind Speed: ${weather.wind.speed}
+  Wind Degree: ${weather.wind.deg}
+`);
 }).pipe(Effect.catchAll((error) => Console.log(`Error: ${error}`)));
 
 program.pipe(
