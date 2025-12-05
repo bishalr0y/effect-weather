@@ -11,7 +11,7 @@ const getWeather = (location: string) =>
       `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${Redacted.value(apiKey)}`,
     );
     if (response.status < 200 || response.status > 300) {
-      return Effect.fail(`Request failed: ${response.status}`);
+      yield* Effect.fail(`Request failed: ${response.status}`);
     }
     const json = yield* response.json;
     return yield* Schema.decodeUnknown(Weather)(json);
