@@ -3,6 +3,12 @@ import { NodeContext, NodeRuntime } from "@effect/platform-node";
 import { Console, Effect, Schema, Config, Redacted } from "effect";
 import { FetchHttpClient, HttpClient } from "@effect/platform";
 import { Weather } from "./schema";
+import { TaggedError } from "effect/Data";
+
+class ApiFetchError extends TaggedError("ApiFetchError")<{
+  message: string;
+  status: number;
+}> {}
 
 const getWeather = (location: string) =>
   Effect.gen(function* () {
@@ -10,8 +16,16 @@ const getWeather = (location: string) =>
     const response = yield* HttpClient.get(
       `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${Redacted.value(apiKey)}&units=metric`,
     );
+
     if (response.status < 200 || response.status > 300) {
-      yield* Effect.fail(`Request failed: ${response.status}`);
+      const body = yield* response.text.pipe(
+        Effect.catchAll(() => Effect.succeed("unreadable body")),
+      );
+
+      return yield* new ApiFetchError({
+        message: body,
+        status: response.status,
+      });
     }
     const json = yield* response.json;
     return yield* Schema.decodeUnknown(Weather)(json);
